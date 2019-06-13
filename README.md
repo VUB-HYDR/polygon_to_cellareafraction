@@ -1,4 +1,4 @@
-# Polygon_to_CellAreaFraction
+# Polygon to Cell Area Fraction
 Tool to convert a shapefile with polygons to a raster grid with in each cell the area fraction of polygons overlying the grid cell. 
 For now, the tool is applied on preprocessing the [HydroLAKES](https://www.hydrosheds.org/pages/hydrolakes) and [GRanD](http://globaldamwatch.org/grand/) datasets into [CTSM](https://github.com/ESCOMP/ctsm) raw input data for lake area fraction. 
 
