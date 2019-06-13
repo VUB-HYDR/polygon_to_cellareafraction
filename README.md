@@ -18,14 +18,14 @@ To use the scripts, the paths on top of each main script should be replaced.
 
 Overview of scripts
 
-  | name                           | 
---|------------------------------- |-
-1 | preprocess_hydrolakes.py       | Performs preprocessing of GranD and HydroLAKES
-2 | cellareafraction_baseline.py   | Calculates the cell area fraction (%) of a single shapefile
-3 | cellareafraction_annual.py     | Calculates the cell area fraction (%) of annual shapefiles
-4 | functions_cellareafraction.py  | Functions necessary to calculate cell area fraction
-6 | postprocess_baseline.py        | Applies the CLM land mask and saves to NetCDF including metadata for single file
-7 | postprocess_annual.py          | Applies the CLM land mask and saves to NetCDF including metadata for annual files
+|  | name                           | 
+|--|------------------------------- |-
+|1 | preprocess_hydrolakes.py       | Performs preprocessing of GranD and HydroLAKES                                   |
+|2 | cellareafraction_baseline.py   | Calculates the cell area fraction (%) of a single shapefile                      |
+|3 | cellareafraction_annual.py     | Calculates the cell area fraction (%) of annual shapefiles                       |
+|4 | functions_cellareafraction.py  | Functions necessary to calculate cell area fraction                              |
+|6 | postprocess_baseline.py        | Applies the CLM land mask and saves to NetCDF including metadata for single file |
+|7 | postprocess_annual.py          | Applies the CLM land mask and saves to NetCDF including metadata for annual files|
 
 
 
