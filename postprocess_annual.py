@@ -102,74 +102,74 @@ clm_landmask = open_netcdf(path_clm_landmask,'LANDMASK')
 # loop over all years
 for year in np.arange(start_year-1,end_year+1):
 
-    print('converting '+str(year))
-
-    # define file names
-    pctgrid_path = 'summed/summed_grid_pct_hydrolakes_'+str(year) + '.tiff'
-
-    # load summed raster (.tiff)
-    pctlake_year = read_raster(outdir+pctgrid_path)
-
-    # apply CLM land mask
-    pctlake_landmasked = pctlake_year*clm_landmask
-
-
-    # ---------
     # Save to netCDF
-
 
     ncdir = '/home/inne/documents/phd/data/processed/ncfiles/'
     ncfilename = 'mksurf_lake_0.05x0.05_histclm5_hydrolakes_'+str(year)+'_c'+str(date)+'.nc'
     resolution = 0.05 # degrees
 
-    # create new netcdf file
-    nc = Dataset(ncdir+ncfilename ,"w", format="NETCDF4")
+    if os.path.isfile(ncdir+ncfilename): 
+        print(ncfilename+' already exists')
+    else:
+        print('converting '+str(year))
 
-    # set global attributes
-    nc.source = 'HydroLAKES polygons dataset v1.0 June 2019'
-    nc.title = 'Percent Lake calculated from the Hydrolakes dataset mapped to the 3x3 minute resolution with the MODIS land-mask by Inne Vanderkelen'
-    nc.references = 'Messager, M.L., Lehner, B., Grill, G., Nedeva, I., Schmitt, O. (2016): Estimating the volume and age of water stored in global lakes using a geo-statistical approach. Nature Communications: 13603. doi: 10.1038/ncomms13603'
-    nc.url = 'https://www.hydrosheds.org/pages/hydrolakes'
-    nc.creation_date = time.ctime(time.time())
+        # define inputfile names
+        pctgrid_path = 'summed/summed_grid_pct_hydrolakes_'+str(year) + '.tiff'
 
-    # create the dimensions
-    lon = nc.createDimension("lon",360/resolution)
-    lat = nc.createDimension("lat",180/resolution)
+        # load summed raster (.tiff)
+        pctlake_year = read_raster(outdir+pctgrid_path)
 
-    # create netCDF variables
-    latitudes = nc.createVariable('lat',np.float64, ('lat',))
-    longitudes = nc.createVariable('lon',np.float64,('lon',))
-    lake_pct = nc.createVariable('PCT_LAKE',np.float64,('lat','lon'))
-    landmask = nc.createVariable('LANDMASK',np.float64,('lat','lon'))
+        # apply CLM land mask
+        pctlake_landmasked = pctlake_year*clm_landmask
 
-    # these two are necessary for the domain (mapping)
-    latixy = nc.createVariable('LATIXY',np.float64,('lat','lon'))
-    longxy = nc.createVariable('LONGXY',np.float64,('lat','lon'))
+        # create new netcdf file
+        nc = Dataset(ncdir+ncfilename ,"w", format="NETCDF4")
 
-    # set variable units
-    latitudes.units = 'degrees_north'
-    longitudes.units = 'degrees_east'
-    lake_pct.units = '%'
-    latixy.units='degrees north'
-    longxy.units='degrees east'
+        # set global attributes
+        nc.source = 'HydroLAKES polygons dataset v1.0 June 2019'
+        nc.title = 'Percent Lake calculated from the Hydrolakes dataset mapped to the 3x3 minute resolution with the MODIS land-mask by Inne Vanderkelen'
+        nc.references = 'Messager, M.L., Lehner, B., Grill, G., Nedeva, I., Schmitt, O. (2016): Estimating the volume and age of water stored in global lakes using a geo-statistical approach. Nature Communications: 13603. doi: 10.1038/ncomms13603'
+        nc.url = 'https://www.hydrosheds.org/pages/hydrolakes'
+        nc.creation_date = time.ctime(time.time())
 
-    # set variable longnames
-    lake_pct.longname='Lake Percent'
-    landmask.longname='MODIS land mask'
-    latixy.longname='latitude-2d'
-    longxy.longname='longitude-2d'
+        # create the dimensions
+        lon = nc.createDimension("lon",360/resolution)
+        lat = nc.createDimension("lat",180/resolution)
 
-    # write values into variable instance
-    lons= np.arange(-180+resolution/2,180+resolution/2,resolution)
-    lats= np.arange(-90+resolution/2,90+resolution/2,resolution)
+        # create netCDF variables
+        latitudes = nc.createVariable('lat',np.float64, ('lat',))
+        longitudes = nc.createVariable('lon',np.float64,('lon',))
+        lake_pct = nc.createVariable('PCT_LAKE',np.float64,('lat','lon'))
+        landmask = nc.createVariable('LANDMASK',np.float64,('lat','lon'))
 
-    latitudes[:] = lats
-    longitudes[:] = lons
-        
-    lake_pct[:] = pctlake_landmasked
-    landmask[:] = clm_landmask
-    latixy[:]=clm_latixy
-    longxy[:]=clm_longxy
+        # these two are necessary for the domain (mapping)
+        latixy = nc.createVariable('LATIXY',np.float64,('lat','lon'))
+        longxy = nc.createVariable('LONGXY',np.float64,('lat','lon'))
 
-    # close file
-    nc.close()
+        # set variable units
+        latitudes.units = 'degrees_north'
+        longitudes.units = 'degrees_east'
+        lake_pct.units = '%'
+        latixy.units='degrees north'
+        longxy.units='degrees east'
+
+        # set variable longnames
+        lake_pct.longname='Lake Percent'
+        landmask.longname='MODIS land mask'
+        latixy.longname='latitude-2d'
+        longxy.longname='longitude-2d'
+
+        # write values into variable instance
+        lons= np.arange(-180+resolution/2,180+resolution/2,resolution)
+        lats= np.arange(-90+resolution/2,90+resolution/2,resolution)
+
+        latitudes[:] = lats
+        longitudes[:] = lons
+            
+        lake_pct[:] = pctlake_landmasked
+        landmask[:] = clm_landmask
+        latixy[:]=clm_latixy
+        longxy[:]=clm_longxy
+
+        # close file
+        nc.close()
